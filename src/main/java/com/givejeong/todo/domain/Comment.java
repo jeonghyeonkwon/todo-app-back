@@ -30,6 +30,17 @@ public class Comment extends BaseTimeEntity{
         study.getCommentList().add(this);
     }
 
+    public Comment(Account account,Qna qna,CommentDto dto){
+        this.content = dto.getComment();
+        QnaMapping(account,qna);
+    }
+    public void QnaMapping(Account account,Qna qna){
+        this.account = account;
+        this.qna = qna;
+        account.getCommentList().add(this);
+        qna.getCommentList().add(this);
+    }
+
 
     /*--------------------------------------연관관계---------------------------------------*/
 

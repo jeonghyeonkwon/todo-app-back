@@ -1,6 +1,7 @@
 package com.givejeong.todo.domain;
 
 import com.givejeong.todo.dto.auth.AccountDto;
+import com.givejeong.todo.dto.auth.UpdateDto;
 import lombok.Getter;
 
 import javax.persistence.*;
@@ -39,6 +40,7 @@ public class Account extends BaseTimeEntity{
         this.accountName = accountDto.getName();
         this.localEnum = LocalEnum.find(accountDto.getLocation());
         this.role = "ROLE_USER";
+
     }
     public List<String> getRoleList(){
         if(this.role.length()>0){
@@ -55,5 +57,23 @@ public class Account extends BaseTimeEntity{
     private List<Study> studyList = new ArrayList<>();
 
     @OneToMany(mappedBy = "account")
+    private List<Qna> qnaList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "account")
     private List<Comment> commentList = new ArrayList<>();
+
+    public void update(String update, UpdateDto dto) {
+        switch (update){
+            case "name":
+                this.accountName = dto.getName();
+            case"local":
+                this.localEnum = LocalEnum.find(dto.getLocal());
+        }
+
+    }
+
+    public void updatePassword(String encode) {
+        this.accountPw = encode;
+
+    }
 }

@@ -20,4 +20,9 @@ public class CommentDto {
         this.comment = comment.getContent();
         this.createComment = comment.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
     }
+    public CommentDto(String writer,String comment,LocalDateTime createComment){
+        this.writer = writer;
+        this.comment = comment;
+        this.createComment = createComment.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+    }
 }

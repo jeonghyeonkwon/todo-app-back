@@ -59,8 +59,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .addFilter(new JwtAuthorizationFilter(authenticationManager(),accountRepository)) //AuthenticationManager
 
                 .authorizeRequests()
-                .antMatchers("/api/study").permitAll()
-                .antMatchers("/api/**").access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+                .antMatchers("/api/**").permitAll()
+                .antMatchers("/api/adsfsdf/**").access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
                 .anyRequest().permitAll()
         .and().apply(new JwtSecurityConfig(tokenProvider));
 

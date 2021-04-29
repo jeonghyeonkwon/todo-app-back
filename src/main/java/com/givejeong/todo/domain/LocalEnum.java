@@ -1,5 +1,6 @@
 package com.givejeong.todo.domain;
 
+import com.givejeong.todo.dto.board.study.LocalDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -7,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -54,8 +56,12 @@ public enum LocalEnum {
                 .map(local->local.kor)
                 .filter(s -> s!=LocalEnum.ALL.kor)
                 .collect(Collectors.toList());
-
     }
+    public static List<com.givejeong.todo.dto.board.study.LocalDto> localList (){
+        List<com.givejeong.todo.dto.board.study.LocalDto> collect = Stream.of(values()).map(data -> new com.givejeong.todo.dto.board.study.LocalDto(data.getKor(), data.name())).collect(Collectors.toList());
+        return collect;
+    }
+
 
 
 }

@@ -12,6 +12,7 @@ public class ListFormDto<T> {
     private boolean hasNext;
     private boolean hasPrevious;
     private T list;
+
     public ListFormDto(Page<T> page , T list){
         this.totalPage = page.getTotalPages();
         this.totalElements = page.getTotalElements();

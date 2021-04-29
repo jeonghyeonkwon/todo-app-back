@@ -5,12 +5,14 @@ import com.givejeong.todo.dto.*;
 import com.givejeong.todo.dto.board.CommentDto;
 import com.givejeong.todo.dto.board.ListFormDto;
 import com.givejeong.todo.dto.board.RoleTypeDto;
+import com.givejeong.todo.dto.board.SampleListDto;
 import com.givejeong.todo.dto.board.study.StudyDto;
 import com.givejeong.todo.dto.board.study.StudyListDto;
 import com.givejeong.todo.repository.AccountRepository;
 import com.givejeong.todo.repository.CommentRepository;
 import com.givejeong.todo.repository.ProgrammingRoleRepository;
 import com.givejeong.todo.repository.StudyRepository;
+import com.givejeong.todo.repository.querydsl.BoardRepository;
 import com.givejeong.todo.security.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,7 +22,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -32,6 +36,7 @@ public class StudyService {
     private final AccountRepository accountRepository;
     private final ProgrammingRoleRepository programmingRoleRepository;
     private final CommentRepository commentRepository;
+    private final BoardRepository boardRepository;
 
     @Transactional
     public ResponseEntity<Long> createStudy(String section, StudyDto dto){
@@ -47,16 +52,21 @@ public class StudyService {
         return new ResponseEntity(save.getId(), HttpStatus.CREATED);
     }
 
+    @Transactional
     public ResponseEntity findStudyDetail(Long id) {
-        Optional<Study> study = studyRepository.findById(id);
-        if(!study.isPresent()){
+        studyRepository.hitUp(id);
+        Optional<StudyDto> optionalStudyDto = studyRepository.findByIdx(id);
+        if(!optionalStudyDto.isPresent()){
              return new ResponseEntity<>(new ErrorDto("해당 게시글을 조회할 수 없습니다."),HttpStatus.NOT_FOUND);
         }
-        Study board = study.get();
-        List<RoleTypeDto> collect = board.getProgrammingRoleList().stream().map(data -> new RoleTypeDto(data)).collect(Collectors.toList());
-        Account account = board.getAccount();
-        List<CommentDto> commentList = board.getCommentList().stream().map(d -> new CommentDto(d)).collect(Collectors.toList());
-        return new ResponseEntity<>(new StudyDto(board,account,collect,commentList),HttpStatus.OK);
+        StudyDto studyDto = optionalStudyDto.get();
+        List<RoleTypeDto> roleTypeDtoList = boardRepository.roleTypeDtoList("study", studyDto.getId());
+        studyDto.setProgrammingType(roleTypeDtoList);
+        return new ResponseEntity<>(studyDto,HttpStatus.OK);
+//        List<RoleTypeDto> collect = board.getProgrammingRoleList().stream().map(data -> new RoleTypeDto(data)).collect(Collectors.toList());
+//        Account account = board.getAccount();
+//        List<CommentDto> commentList = board.getCommentList().stream().map(d -> new CommentDto(d)).collect(Collectors.toList());
+//        return new ResponseEntity<>(new StudyDto(board,account,collect,commentList),HttpStatus.OK);
     }
 
 
@@ -67,20 +77,34 @@ public class StudyService {
         studyRepository.save(study);
         return new ResponseEntity<>(study.getId(),HttpStatus.OK);
     }
-    public ResponseEntity findStudy(String section,Pageable pageable) {
-        FieldEnum fieldEnum = FieldEnum.find(section);
-        System.out.println("서비스 section: " + section);
-        System.out.println(fieldEnum);
-        Page<Study> study = studyRepository.findSectionStudy(pageable,fieldEnum);
 
-        System.out.println("getTotalPage : " + study.getTotalPages()+" getTotalElement : "+study.getTotalElements());
-        System.out.println("-------------------------------슬라이스 부모---------------------------------------");
-        System.out.println("getNumber : " + study.getNumber()+" isFirst : " + study.isFirst() + " isLast : " + study.isLast());
-        System.out.println("hasNext : " + study.hasNext() + " hasPrevious : " + study.hasPrevious() );
-        List<StudyListDto> list = study.stream().map(o -> new StudyListDto(o)).collect(Collectors.toList());
-
-        ListFormDto dto = new ListFormDto(study,list);
-        return new ResponseEntity(dto,HttpStatus.OK);
+    //게시판 리스트
+    public ResponseEntity findStudy(String section,LocalEnum localEnum,Pageable pageable) {
+//        FieldEnum fieldEnum = FieldEnum.find(section);
+//        System.out.println("서비스 section: " + section);
+//        System.out.println(fieldEnum);
+//        Page<Study> study;
+//        if(localEnum.name().equals("ALL")){
+//            study = studyRepository.findSectionStudy(pageable,fieldEnum);
+//        }else{
+//             study = studyRepository.findSectionLocalStudy(pageable,fieldEnum,localEnum);
+//        }
+//
+//        List<StudyListDto> list = study.stream().map(o -> new StudyListDto(o)).collect(Collectors.toList());
+//
+//
+//        ListFormDto dto = new ListFormDto(study,list);
+//        Map map = new HashMap();
+//        map.put("list",dto);
+//
+//
+//        return new ResponseEntity(map,HttpStatus.OK);
+        Page<StudyListDto> studyListDtos = studyRepository.studyListDtos(section, localEnum, pageable);
+        List<Long> studyIdList = studyListDtos.stream().map(o -> o.getId()).collect(Collectors.toList());
+        List<RoleTypeDto> roleTypeDtoList = boardRepository.roleTypeDtoListInType("study", studyIdList);
+        Map<Long,List<RoleTypeDto>> map = roleTypeDtoList.stream().collect(Collectors.groupingBy(dto->dto.getBoardId()));
+        studyListDtos.forEach(o->o.setRoleTypeDtoList(map.get(o.getId())));
+        return new ResponseEntity(studyListDtos,HttpStatus.OK);
     }
 
     @Transactional
@@ -95,5 +119,15 @@ public class StudyService {
         Comment save = commentRepository.save(comment);
 
         return new ResponseEntity(save.getId(),HttpStatus.CREATED);
+    }
+
+    public List<SampleListDto> recentList() {
+
+        return boardRepository.recentStudyList();
+    }
+
+    public ResponseEntity commentList(Long boardId, Pageable pageable) {
+        Page<CommentDto> commentDtos = commentRepository.studyCommentList(pageable, boardId);
+        return new ResponseEntity<>(commentDtos,HttpStatus.OK);
     }
 }

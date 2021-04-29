@@ -1,5 +1,6 @@
 package com.givejeong.todo.controller;
 
+import com.givejeong.todo.domain.LocalEnum;
 import com.givejeong.todo.dto.board.CommentDto;
 import com.givejeong.todo.dto.board.study.StudyDto;
 import com.givejeong.todo.service.StudyService;
@@ -10,15 +11,28 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequiredArgsConstructor
 public class StudyController {
     private final StudyService studyService;
 
+    @GetMapping("/locallist")
+    public ResponseEntity 스터디_지역(){
+        Map data = new HashMap<>();
+        data.put("local", LocalEnum.localList());
+        return ResponseEntity.ok().body(data);
+    }
     @GetMapping("/api/study")
-    public ResponseEntity 스터디_게시판(@RequestParam("section") String section, @PageableDefault(sort="id" ,direction = Sort.Direction.DESC)Pageable pageable){
+    public ResponseEntity 스터디_게시판(@RequestParam("section") String section,@RequestParam(value="local",defaultValue = "ALL") LocalEnum localEnum, Pageable pageable){
+        System.out.println("지역 " +localEnum.name());
         System.out.println("컨트롤러 section : "+ section);
-        return studyService.findStudy(section,pageable);
+
+        System.out.println("offset : " + pageable.getOffset());
+        System.out.println("size : " + pageable.getPageSize());
+        return studyService.findStudy(section,localEnum,pageable);
     }
 
     //이거 ?section으로 바꿔야함
@@ -32,6 +46,10 @@ public class StudyController {
     public ResponseEntity 게시글_자세히(@PathVariable("id") Long id){
         System.out.println("여기 접근 "+id);
         return studyService.findStudyDetail(id);
+    }
+    @GetMapping("/api/study/{id}/comment")
+    public ResponseEntity Study_댓글_페이징(@PathVariable("id") Long boardId ,Pageable pageable){
+        return studyService.commentList(boardId,pageable);
     }
     @PatchMapping("/api/study/{id}")
     public ResponseEntity 마감_하기(@PathVariable("id") Long id){

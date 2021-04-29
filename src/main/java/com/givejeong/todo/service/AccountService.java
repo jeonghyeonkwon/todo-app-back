@@ -3,6 +3,7 @@ package com.givejeong.todo.service;
 import com.givejeong.todo.domain.Account;
 import com.givejeong.todo.dto.auth.AccountDto;
 import com.givejeong.todo.dto.ErrorDto;
+import com.givejeong.todo.dto.auth.UpdateDto;
 import com.givejeong.todo.repository.AccountRepository;
 import com.givejeong.todo.security.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
@@ -51,5 +52,40 @@ public class AccountService {
     public Account currentUser() {
         String accountId = SecurityUtil.getCurrentUsername().get();
         return accountRepository.findByAccountId(accountId);
+    }
+    @Transactional
+    public ResponseEntity updateUser(Long id, String update, UpdateDto dto) {
+        Account account = accountRepository.findById(id).get();
+        String currentId = SecurityUtil.getCurrentUsername().get();
+        if(!account.getAccountId().equals(currentId)){
+            return new ResponseEntity(new ErrorDto("정보 변경에 오류가 발생했습니다. 다시 시도해 주세요"),HttpStatus.BAD_REQUEST);
+        }
+        switch (update){
+            case"password":
+                if(!passwordEncoder.matches(dto.getCurrentPw(),account.getAccountPw())){
+                    return new ResponseEntity(new ErrorDto("현재 비밀번호가 일치하지 않습니다"),HttpStatus.BAD_REQUEST);
+                }
+                account.updatePassword(passwordEncoder.encode(dto.getNewPw()));
+                break;
+            case"name":
+            case"local":
+                account.update(update,dto);
+                break;
+        }
+        Account updateUser = accountRepository.save(account);
+        return new ResponseEntity(updateUser.getId(),HttpStatus.NO_CONTENT);
+    }
+    @Transactional
+    public ResponseEntity deleteUser(Long id, UpdateDto dto) {
+        Account account = accountRepository.findById(id).get();
+        String userId = SecurityUtil.getCurrentUsername().get();
+        if(!account.getAccountId().equals(userId)){
+            return new ResponseEntity(new ErrorDto("정보 변경에 오류가 발생했습니다. 다시 시도해 주세요"),HttpStatus.BAD_REQUEST);
+        }else if(!passwordEncoder.matches(dto.getWithDrawalPw(),account.getAccountPw())){
+            return new ResponseEntity(new ErrorDto("비밀번호가 맞지 않습니다"),HttpStatus.BAD_REQUEST);
+        }
+        accountRepository.delete(account);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+
     }
 }

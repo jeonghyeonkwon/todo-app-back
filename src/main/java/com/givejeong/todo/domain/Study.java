@@ -29,6 +29,9 @@ public class Study extends BaseTimeEntity {
     //모집 인원
     private Long applicant;
 
+    //조회수
+    private Long hit;
+
     //프로그래밍 언어, 모바일, 웹, DB
     @Enumerated(EnumType.STRING)
     private FieldEnum fieldEnum;
@@ -46,6 +49,7 @@ public class Study extends BaseTimeEntity {
         this.applicant = dto.getApplicant();
         this.fieldEnum = FieldEnum.find(section);
         this.studyStatusEnum = StudyStatusEnum.ING;
+        this.hit = (long) 0;
     }
 
     /*----------------------- 일대다-------------------------*/

@@ -1,5 +1,6 @@
 package com.givejeong.todo.dto.auth;
 
+import com.givejeong.todo.domain.Account;
 import lombok.*;
 
 @Data
@@ -13,4 +14,10 @@ public class AccountDto {
     private String name;
     private String location;
 
+    public AccountDto(Account dto){
+        this.id = dto.getId();
+        this.accountId = dto.getAccountId();
+        this.name = dto.getAccountName();
+        this.location = dto.getLocalEnum().getKor();
+    }
 }

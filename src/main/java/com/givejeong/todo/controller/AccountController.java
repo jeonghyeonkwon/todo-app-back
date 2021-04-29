@@ -6,6 +6,7 @@ import com.givejeong.todo.dto.*;
 import com.givejeong.todo.dto.auth.AccountDto;
 import com.givejeong.todo.dto.auth.CheckDto;
 import com.givejeong.todo.dto.auth.LoginDto;
+import com.givejeong.todo.dto.auth.UpdateDto;
 import com.givejeong.todo.security.jwt.JwtFilter;
 import com.givejeong.todo.security.jwt.TokenProvider;
 import com.givejeong.todo.security.util.SecurityUtil;
@@ -37,8 +38,8 @@ public class AccountController {
         Map data = new HashMap<>();
         data.put("local",LocalEnum.createAccountLocalList());
         return ResponseEntity.ok().body(data);
-
     }
+
     @GetMapping("/validate")
     public ResponseEntity 아이디_중복_체크(@RequestParam("accountId") String accountId){
         Map data = accountService.validateId(accountId);
@@ -71,6 +72,31 @@ public class AccountController {
         System.out.println("체크 함");
         CheckDto dto = new CheckDto(account);
         return ResponseEntity.ok().body(dto);
+    }
+    @GetMapping("/api/myinfo")
+    public ResponseEntity 회원정보_수정_폼(){
+        Map data = new HashMap<>();
+        Account account = accountService.currentUser();
+        data.put("account",new AccountDto(account));
+        data.put("local",LocalEnum.createAccountLocalList());
+        return ResponseEntity.ok().body(data);
+    }
+    @PatchMapping("/api/myinfo/{id}")
+    public ResponseEntity 회원정보_수정(@RequestParam("update") String update,@RequestBody UpdateDto dto,@PathVariable("id") Long id){
+        System.out.println("update : " + update);
+        System.out.println(dto);
+
+        return accountService.updateUser(id,update,dto);
+    }
+
+    //아직 미완성 삭제시 연관된 엔티티 관련 문제
+    @DeleteMapping("/api/myinfo/{id}")
+    public ResponseEntity 회원_삭제하기(@PathVariable("id")Long id ,@RequestBody UpdateDto dto){
+        System.out.println("회원삭제");
+        System.out.println(id);
+        System.out.println(dto);
+        return accountService.deleteUser(id, dto);
+
     }
 
 }
