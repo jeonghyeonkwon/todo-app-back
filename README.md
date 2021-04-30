@@ -2,7 +2,7 @@
 [프론트엔드 (React)](https://github.com/jeonghyeonkwon/todo-app-front)
 
 ## 주요 기술
-Spring-boot, H2, Spring Data JPA, Spring Security, JWT([참고 코드](https://github.com/SilverNine/spring-boot-jwt-tutorial))
+Spring-boot, H2, Spring Data JPA, Querydsl, Spring Security, JWT([참고 코드](https://github.com/SilverNine/spring-boot-jwt-tutorial))
 
 ## Controller(현재 상황)
 Method|Path|이름|jwt 토큰 여부|내용(보완 사항)|
