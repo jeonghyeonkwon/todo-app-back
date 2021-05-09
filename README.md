@@ -21,12 +21,12 @@ POST|/api/study|스터디 게시글 작성|O|
 GET|/api/study/{id}|스터디 게시글 자세히|O|
 PATCH|/api/study/{id}|스터디 모집 마감|O|현재 게시글을 모집 마감으로 변경 보안을 위해 게시글의 작성자와 마감한 작성자의 비교 로직 작성 필요
 POST|/api/study/{id}|댓글 작성|O|
-GET|/api/study/{id}/comment|댓글 리스트 반환|댓글 페이징 처리|
+GET|/api/study/{id}/comment|댓글 리스트 반환|O|댓글 페이징 처리|
 GET|ex) /api/qna?section=web&page=24|게시물 리스트|X|모바일,웹,DB,프로그래밍 언어에 따라 페이징처리로 리스트 응답|
 POST|/api/qna|Q&A 게시글 작성|O|
 GET|/api/qna/{id}|Q&A 게시글 자세히|O|
 POST|/api/qna/{id}|댓글 작성|O|
-GET|/api/todo|todo 리스트 출력|O|토큰을 이용한 로그인 유저의 todo리스트 반환|
+GET|/api/todo?status={No}&page={pageNo}&size=10|todo 리스트 출력|O|토큰을 이용한 로그인 유저의 todo리스트 반환|
 POST|/api/todo|TODO 추가|O|
 PATCH|api/todo/{id}|TODO 성공 처리|O|현재 진행중 또는 오늘 마감인 TODO 성공으로 변경
 
