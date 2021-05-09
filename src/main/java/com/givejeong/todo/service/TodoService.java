@@ -7,6 +7,8 @@ import com.givejeong.todo.repository.AccountRepository;
 import com.givejeong.todo.repository.TodoRepository;
 import com.givejeong.todo.security.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -30,15 +32,16 @@ public class TodoService {
         return new ResponseEntity(save.getId(), HttpStatus.CREATED);
     }
     @Transactional
-    public ResponseEntity todoList() {
+    public ResponseEntity todoList(Long status, Pageable pageable) {
         String id = SecurityUtil.getCurrentUsername().get();
         Account account = accountRepository.findByAccountId(id);
         for(Todo todo : account.getTodoList()){
             todo.refreshStatus();
             todoRepository.save(todo);
         }
-        List<TodoDto> collect = account.getTodoList().stream().map(d -> new TodoDto(d)).collect(Collectors.toList());
-        return new ResponseEntity(collect,HttpStatus.OK);
+        Page<TodoDto> todoList = todoRepository.findTodoList(account.getId(), status, pageable);
+
+        return new ResponseEntity(todoList,HttpStatus.OK);
     }
     @Transactional
     public ResponseEntity success(Long id) {

@@ -13,4 +13,5 @@ public enum TodoEnum {
     public String getKor() {
         return kor;
     }
+
 }

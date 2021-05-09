@@ -6,6 +6,7 @@ import com.givejeong.todo.dto.board.CommentDto;
 import com.givejeong.todo.dto.board.qna.QnaDto;
 import com.givejeong.todo.dto.board.study.StudyDto;
 import com.givejeong.todo.dto.board.RoleTypeDto;
+import com.givejeong.todo.dto.todo.TodoDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -100,7 +101,27 @@ public class InitDb {
                 });
                 em.persist(study);
 
+
             }
+            for(int i=1;i<=50;i++){
+                TodoDto dto;
+                if(i<10){
+                    dto = TodoDto.builder().title("할일 추가 하였습니다" + i)
+                            .content("할일의 내용입니다 이렇게 길게 쓰면 어떻게 출력될까요??? 할일의 내용입니다 이렇게 길게 쓰면 어떻게 출력될까요???할일의 내용입니다 이렇게 길게 쓰면 어떻게 출력될까요??" +
+                                    "?할일의 내용입니다 이렇게 길게 쓰면 어떻게 출력될까요???할일의 내용입니다 이렇게 길게 쓰면 어떻게 출력될까요???할일의 내용입니다 이렇게 길게 쓰면 어떻게 출력될까요???할일의 내용입니다 이렇게 길게 쓰면 어떻게 출력될까요???할일의 내용입니다 이렇게 길게 쓰면 어떻게 출력될까요???"+i)
+                            .goal("200"+i+"-05-09T09:39:38.974Z")
+                            .build();
+                }else{
+                    dto = TodoDto.builder().title("할일 추가 하였습니다" + i)
+                            .content("할일의 내용입니다 이렇게 길게 쓰면 어떻게 출력될까요??? 할일의 내용입니다 이렇게 길게 쓰면 어떻게 출력될까요???할일의 내용입니다 이렇게 길게 쓰면 어떻게 출력될까요??" +
+                                    "?할일의 내용입니다 이렇게 길게 쓰면 어떻게 출력될까요???할일의 내용입니다 이렇게 길게 쓰면 어떻게 출력될까요???할일의 내용입니다 이렇게 길게 쓰면 어떻게 출력될까요???할일의 내용입니다 이렇게 길게 쓰면 어떻게 출력될까요???할일의 내용입니다 이렇게 길게 쓰면 어떻게 출력될까요???"+i)
+                            .goal("20"+i+"-05-09T09:39:38.974Z")
+                            .build();
+                }
+                Todo todo = new Todo(givejeong,dto);
+                em.persist(todo);
+            }
+
         }
         public void dbInitUserGivejeong1(){
             AccountDto accountDto = AccountDto.builder()
@@ -237,7 +258,7 @@ public class InitDb {
                 });
                 em.persist(qna);
                 for(int k = 0;k<=33;k++){
-                    CommentDto dto = CommentDto.builder().comment("댓글을 달고있다 페이징"+k).build();
+                    CommentDto dto = CommentDto.builder().comment("댓글이 달렸습니다. 페이징"+k).build();
                     Comment comment = new Comment(givejeong,qna,dto);
                     em.persist(comment);
                 }
