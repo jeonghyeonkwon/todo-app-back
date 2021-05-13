@@ -42,6 +42,7 @@ public class InitDb {
                     .accountId("givejeong")
                     .password("1234")
                     .name("권정현")
+                    .tel("02-0000-0000")
                     .location("서울").build();
             Account givejeong = new Account(accountDto);
             givejeong.setPassword(passwordEncoder.encode(accountDto.getPassword()));
@@ -106,7 +107,7 @@ public class InitDb {
             for(int i=1;i<=50;i++){
                 TodoDto dto;
                 if(i<10){
-                    dto = TodoDto.builder().title("할일 추가 하였습니다" + i)
+                    dto = TodoDto.builder().title("할일 추가 하였습니다" + i+"길게 쓰기 길게 쓰기 길게 쓰기 길게 쓰기")
                             .content("할일의 내용입니다 이렇게 길게 쓰면 어떻게 출력될까요??? 할일의 내용입니다 이렇게 길게 쓰면 어떻게 출력될까요???할일의 내용입니다 이렇게 길게 쓰면 어떻게 출력될까요??" +
                                     "?할일의 내용입니다 이렇게 길게 쓰면 어떻게 출력될까요???할일의 내용입니다 이렇게 길게 쓰면 어떻게 출력될까요???할일의 내용입니다 이렇게 길게 쓰면 어떻게 출력될까요???할일의 내용입니다 이렇게 길게 쓰면 어떻게 출력될까요???할일의 내용입니다 이렇게 길게 쓰면 어떻게 출력될까요???"+i)
                             .goal("200"+i+"-05-09T09:39:38.974Z")
@@ -128,6 +129,7 @@ public class InitDb {
                     .accountId("givejeong1")
                     .password("1234")
                     .name("김정현")
+                    .tel("053-0000-0000")
                     .location("대구").build();
             Account givejeong = new Account(accountDto);
             givejeong.setPassword(passwordEncoder.encode(accountDto.getPassword()));
@@ -200,6 +202,7 @@ public class InitDb {
                     .accountId("givejeong2")
                     .password("1234")
                     .name("이정현")
+                    .tel("054-0000-0000")
                     .location("부산").build();
             Account givejeong = new Account(accountDto);
             givejeong.setPassword(passwordEncoder.encode(accountDto.getPassword()));

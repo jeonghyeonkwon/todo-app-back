@@ -11,6 +11,7 @@ public class UpdateDto {
     private String currentPw;
     private String newPw;
     private String reNewPw;
+    private String tel;
     private String name;
     private String local;
     private String withDrawalPw;

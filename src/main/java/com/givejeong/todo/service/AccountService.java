@@ -3,6 +3,7 @@ package com.givejeong.todo.service;
 import com.givejeong.todo.domain.Account;
 import com.givejeong.todo.dto.auth.AccountDto;
 import com.givejeong.todo.dto.ErrorDto;
+import com.givejeong.todo.dto.auth.SearchDto;
 import com.givejeong.todo.dto.auth.UpdateDto;
 import com.givejeong.todo.repository.AccountRepository;
 import com.givejeong.todo.security.util.SecurityUtil;
@@ -69,6 +70,7 @@ public class AccountService {
                 break;
             case"name":
             case"local":
+            case"tel":
                 account.update(update,dto);
                 break;
         }
@@ -87,5 +89,10 @@ public class AccountService {
         accountRepository.delete(account);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
 
+    }
+
+    public ResponseEntity searchId(SearchDto searchDto) {
+
+        return null;
     }
 }

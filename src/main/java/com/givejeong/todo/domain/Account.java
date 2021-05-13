@@ -24,6 +24,7 @@ public class Account extends BaseTimeEntity{
 
     private String accountName;
 
+    private String tel;
     @OneToMany(mappedBy = "account")
     private List<Todo> todoList =new ArrayList<>();
 
@@ -36,8 +37,8 @@ public class Account extends BaseTimeEntity{
 
     public Account(AccountDto accountDto){
         this.accountId = accountDto.getAccountId();
-
         this.accountName = accountDto.getName();
+        this.tel = accountDto.getTel();
         this.localEnum = LocalEnum.find(accountDto.getLocation());
         this.role = "ROLE_USER";
 
@@ -66,8 +67,13 @@ public class Account extends BaseTimeEntity{
         switch (update){
             case "name":
                 this.accountName = dto.getName();
+                break;
             case"local":
                 this.localEnum = LocalEnum.find(dto.getLocal());
+                break;
+            case "tel":
+                this.tel = dto.getTel();
+                break;
         }
 
     }

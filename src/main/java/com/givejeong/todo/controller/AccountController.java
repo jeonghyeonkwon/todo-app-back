@@ -3,10 +3,7 @@ package com.givejeong.todo.controller;
 import com.givejeong.todo.domain.Account;
 import com.givejeong.todo.domain.LocalEnum;
 import com.givejeong.todo.dto.*;
-import com.givejeong.todo.dto.auth.AccountDto;
-import com.givejeong.todo.dto.auth.CheckDto;
-import com.givejeong.todo.dto.auth.LoginDto;
-import com.givejeong.todo.dto.auth.UpdateDto;
+import com.givejeong.todo.dto.auth.*;
 import com.givejeong.todo.security.jwt.JwtFilter;
 import com.givejeong.todo.security.jwt.TokenProvider;
 import com.givejeong.todo.security.util.SecurityUtil;
@@ -96,6 +93,12 @@ public class AccountController {
         System.out.println(id);
         System.out.println(dto);
         return accountService.deleteUser(id, dto);
+
+    }
+
+    @GetMapping("/api/search-id")
+    public ResponseEntity 아이디_찾기(@RequestBody SearchDto searchDto){
+        return accountService.searchId(searchDto);
 
     }
 
