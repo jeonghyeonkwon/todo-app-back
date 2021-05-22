@@ -128,8 +128,8 @@ public class InitDb {
             AccountDto accountDto = AccountDto.builder()
                     .accountId("givejeong1")
                     .password("1234")
-                    .name("김정현")
-                    .tel("053-0000-0000")
+                    .name("권정현")
+                    .tel("02-0000-0000")
                     .location("대구").build();
             Account givejeong = new Account(accountDto);
             givejeong.setPassword(passwordEncoder.encode(accountDto.getPassword()));

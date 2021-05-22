@@ -97,9 +97,33 @@ public class AccountController {
     }
 
     @GetMapping("/api/search-id")
-    public ResponseEntity 아이디_찾기(@RequestBody SearchDto searchDto){
-        return accountService.searchId(searchDto);
+    public ResponseEntity 아이디_찾기(@RequestParam String accountName, @RequestParam String tel){
+        System.out.println("accountName : "+accountName+" tel : "+tel);
+        return accountService.searchId(accountName,tel);
 
+    }
+    @GetMapping("/api/search-pw")
+    public ResponseEntity 비밀번호_찾아_id_넘기기(@RequestParam String accountName,@RequestParam String accountId,@RequestParam String tel){
+        return accountService.searchPw(accountId,accountName,tel);
+    }
+    @PatchMapping("/api/search-pw/{id}")
+    public ResponseEntity 비밀번호_변경(@PathVariable Long id,@RequestBody SearchDto searchDto){
+
+        System.out.println("1");
+        if(!searchDto.getNewPw().equals(searchDto.getReNewPw())){
+            System.out.println("2");
+            System.out.println("new : " + searchDto.getReNewPw() + "reNew : " + searchDto.getReNewPw());
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+
+
+        if(id== searchDto.getId()){
+            System.out.println("3");
+            return accountService.updatePw(searchDto);
+        }else{
+            System.out.println("4");
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
     }
 
 }

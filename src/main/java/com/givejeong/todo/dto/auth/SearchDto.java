@@ -4,8 +4,7 @@ import lombok.Data;
 
 @Data
 public class SearchDto {
-    private String accountId;
-    private String accountName;
-    private String tel;
-
+  private Long id;
+  private String newPw;
+  private String reNewPw;
 }

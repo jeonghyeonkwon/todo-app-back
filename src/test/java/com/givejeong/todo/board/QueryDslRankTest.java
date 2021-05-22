@@ -42,6 +42,7 @@ public class QueryDslRankTest {
                 .accountId("aaa")
                 .password("1234")
                 .name("권정현")
+                .tel("010-1234-1234")
                 .location("서울").build();
         Account givejeong = new Account(accountDto);
         givejeong.setPassword(passwordEncoder.encode(accountDto.getPassword()));

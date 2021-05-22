@@ -15,7 +15,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -91,8 +94,33 @@ public class AccountService {
 
     }
 
-    public ResponseEntity searchId(SearchDto searchDto) {
+    public ResponseEntity searchId(String accountName, String tel) {
+        List<String> strings = accountRepository.searchId(accountName,tel);
+        if(strings.size()==0) return new ResponseEntity("조건에 맞는 아이디가 없습니다.",HttpStatus.NOT_FOUND);
+        List<String> findId = strings.stream().map(s -> {
+            StringBuffer buffer = new StringBuffer(s.length());
+            buffer.append(s.substring(0, s.length() / 2));
+            for (int i = 0; i < s.length() - s.length() / 2; i++) buffer.append("*");
+            return buffer.toString();
+        }).collect(Collectors.toList());
+        return new ResponseEntity(findId,HttpStatus.OK);
+    }
+    public ResponseEntity searchPw(String accountId,String accountName,String tel){
+        Optional<Long> optional = accountRepository.searchPw(accountName, accountId, tel);
+        if(!optional.isPresent()){
+            return new ResponseEntity("회원 정보가 일치하지 않습니다",HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity(optional.get(),HttpStatus.OK);
+    }
 
-        return null;
+    @Transactional
+    public ResponseEntity updatePw(SearchDto searchDto) {
+        Optional<Account> byId = accountRepository.findById(searchDto.getId());
+        if(!byId.isPresent()){
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+        Account account = byId.get();
+        account.updatePassword(passwordEncoder.encode(searchDto.getNewPw()));
+        return new ResponseEntity(HttpStatus.OK);
     }
 }

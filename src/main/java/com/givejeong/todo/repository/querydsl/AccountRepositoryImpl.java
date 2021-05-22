@@ -7,6 +7,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import javax.persistence.EntityManager;
+import java.util.List;
 import java.util.Optional;
 
 import static com.givejeong.todo.domain.QAccount.*;
@@ -22,23 +23,30 @@ public class AccountRepositoryImpl implements AccountRepositoryCustom{
 
 
     @Override
-    public Optional<Account> searchId(SearchDto searchDto) {
-        String accountId = queryFactory.select(account.accountId).from(account).where(account.accountName.eq(searchDto.getAccountName()), account.tel.eq(searchDto.getTel())).fetchFirst();
-        return Optional.empty();
+    public List<String> searchId(String accountName,String tel) {
+        List<String> fetch = queryFactory
+                .select(account.accountId)
+                .from(account)
+                .where(
+                        account.accountName.eq(accountName),
+                        account.tel.eq(tel)
+                )
+                .fetch();
+        return fetch;
     }
 
     @Override
-    public Optional<Account> searchPw(SearchDto searchDto) {
-        return Optional.empty();
+    public Optional<Long> searchPw(String accountName,String accountId,String tel) {
+        Long id = queryFactory
+                .select(account.id)
+                .from(account)
+                .where(
+                        account.accountName.eq(accountName),
+                        account.accountId.eq(accountId),
+                        account.tel.eq(tel)
+                )
+                .fetchFirst();
+        return Optional.ofNullable(id);
     }
-//
-//    private BooleanExpression accountNameEq(String accountName){
-//
-//    }
-//    private BooleanExpression accountIdEq(String accountId){
-//
-//    }
-//    private BooleanExpression telEq(String tel){
-//
-//    }
+
 }
