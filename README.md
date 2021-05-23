@@ -33,5 +33,6 @@ GET|/api/todo?status={No}&page={pageNo}&size=10|todo 리스트 출력|O|토큰�
 POST|/api/todo|TODO 추가|O|
 PATCH|api/todo/{id}|TODO 성공 처리|O|현재 진행중 또는 오늘 마감인 TODO 성공으로 변경
 
-
+### ERD
+![데이터 베이스](https://user-images.githubusercontent.com/38342219/119259867-35e82300-bc0b-11eb-954b-afd40755c425.PNG)
 
