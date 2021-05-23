@@ -1,4 +1,4 @@
-# 스터디 TODO Back-end[미완성] (21-05-09기준)
+# 스터디 TODO Back-end[미완성] (21-05-23기준)
 [프론트엔드 (React)](https://github.com/jeonghyeonkwon/todo-app-front)
 
 ## 주요 기술
@@ -13,7 +13,10 @@ POST|/authenticate|로그인|토큰 발행|
 GET|/register|회원가입 폼|X|회원 가입 폼에 지역리스트를 보내줌|
 GET|/validate|아이디 검증|X|회원 가입 중 중복된 이름이 있는지 검증|
 POST|/register|회원 가입 완료|X|회원 가입 데이터를 받아 db에 저장|
-GET|api/myinfo|회원 정보 수정 폼|O|로그인된 회원 정보(아이디,이름,지역)만 출력|
+GET|/api/myinfo|회원 정보 수정 폼|O|로그인된 회원 정보(아이디,이름,지역)만 출력|
+GET|/api/search-id|아이디 찾기|X|회원가입한 회원의 이름, 전화번호로 검색
+GET|/api/search-pw|비밀번호 찾기|X|회원가임한 아이디, 이름 전화번호로 검색해 있으면 pk 넘겨줌|
+PATCH|/api/search-pw/{id}|비밀번호 변경|X|새로운 비밀번호로 수정|
 PATCH|/api/myinfo/{id}|회원 정보 수정|O|회원 정보 수정|
 GET|/locallist|지역 리스트 반환|X|지역(서울,대구,대전,...등)|
 GET|ex) /api/study?section=web&page=24|게시물 리스트|X|모바일,웹,DB,프로그래밍 언어에 따라 페이징처리로 리스트 응답|
