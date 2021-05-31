@@ -9,6 +9,7 @@ import com.givejeong.todo.security.jwt.TokenProvider;
 import com.givejeong.todo.security.util.SecurityUtil;
 import com.givejeong.todo.service.AccountService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
+@RequestMapping("/api")
+@Slf4j
 @RequiredArgsConstructor
 public class AccountController {
     private final AccountService accountService;
@@ -31,6 +34,7 @@ public class AccountController {
 
     @GetMapping("/register")
     public ResponseEntity 회원가입_폼(){
+
         //지역 리스트 반환
         Map data = new HashMap<>();
         data.put("local",LocalEnum.createAccountLocalList());
@@ -39,8 +43,9 @@ public class AccountController {
 
     @GetMapping("/validate")
     public ResponseEntity 아이디_중복_체크(@RequestParam("accountId") String accountId){
-        Map data = accountService.validateId(accountId);
-        return ResponseEntity.ok().body(data);
+
+        return accountService.validateId(accountId);
+
     }
     @PostMapping("/register")
     public ResponseEntity 회원가입_완료(@RequestBody AccountDto dto){
@@ -54,23 +59,19 @@ public class AccountController {
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(loginDto.getUsername(),loginDto.getPassword());
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(token);
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
         String jwt = tokenProvider.createToken(authentication);
-
-        Account user = accountService.currentUser();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER,"Bearer " + jwt);
         return new ResponseEntity<>(new TokenDto(jwt), httpHeaders, HttpStatus.OK);
     }
 
-    @GetMapping("/api/auth/check")
+    @GetMapping("/auth/check")
     public ResponseEntity<CheckDto> 로그인_체크(){
         Account account = accountService.currentUser();
-        System.out.println("체크 함");
         CheckDto dto = new CheckDto(account);
         return ResponseEntity.ok().body(dto);
     }
-    @GetMapping("/api/myinfo")
+    @GetMapping("/myinfo")
     public ResponseEntity 회원정보_수정_폼(){
         Map data = new HashMap<>();
         Account account = accountService.currentUser();
@@ -78,52 +79,36 @@ public class AccountController {
         data.put("local",LocalEnum.createAccountLocalList());
         return ResponseEntity.ok().body(data);
     }
-    @PatchMapping("/api/myinfo/{id}")
+    @PatchMapping("/myinfo/{id}")
     public ResponseEntity 회원정보_수정(@RequestParam("update") String update,@RequestBody UpdateDto dto,@PathVariable("id") Long id){
-        System.out.println("update : " + update);
-        System.out.println(dto);
-
         return accountService.updateUser(id,update,dto);
     }
 
     //아직 미완성 삭제시 연관된 엔티티 관련 문제
-    @DeleteMapping("/api/myinfo/{id}")
+    @DeleteMapping("/myinfo/{id}")
     public ResponseEntity 회원_삭제하기(@PathVariable("id")Long id ,@RequestBody UpdateDto dto){
-        System.out.println("회원삭제");
-        System.out.println(id);
-        System.out.println(dto);
+
         return accountService.deleteUser(id, dto);
 
     }
 
-    @GetMapping("/api/search-id")
+    @GetMapping("/search-id")
     public ResponseEntity 아이디_찾기(@RequestParam String accountName, @RequestParam String tel){
-        System.out.println("accountName : "+accountName+" tel : "+tel);
+
         return accountService.searchId(accountName,tel);
 
     }
-    @GetMapping("/api/search-pw")
+    @GetMapping("/search-pw")
     public ResponseEntity 비밀번호_찾아_id_넘기기(@RequestParam String accountName,@RequestParam String accountId,@RequestParam String tel){
         return accountService.searchPw(accountId,accountName,tel);
     }
-    @PatchMapping("/api/search-pw/{id}")
+    @PatchMapping("/search-pw/{id}")
     public ResponseEntity 비밀번호_변경(@PathVariable Long id,@RequestBody SearchDto searchDto){
+        if(!searchDto.getNewPw().equals(searchDto.getReNewPw())) return new ResponseEntity(HttpStatus.BAD_REQUEST);
 
-        System.out.println("1");
-        if(!searchDto.getNewPw().equals(searchDto.getReNewPw())){
-            System.out.println("2");
-            System.out.println("new : " + searchDto.getReNewPw() + "reNew : " + searchDto.getReNewPw());
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        }
+        if(id == searchDto.getId()) return accountService.updatePw(searchDto);
+        else return new ResponseEntity(HttpStatus.BAD_REQUEST);
 
-
-        if(id== searchDto.getId()){
-            System.out.println("3");
-            return accountService.updatePw(searchDto);
-        }else{
-            System.out.println("4");
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        }
     }
 
 }

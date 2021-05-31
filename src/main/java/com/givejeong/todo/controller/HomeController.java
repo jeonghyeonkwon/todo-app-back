@@ -29,8 +29,4 @@ public class HomeController {
         map.put("qna",qnaService.recentList());
         return new ResponseEntity(map, HttpStatus.OK);
     }
-    @PostMapping("/token")
-    public String token(){
-        return "<h1>token</h1>";
-    }
 }

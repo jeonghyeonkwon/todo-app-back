@@ -26,7 +26,7 @@ public class TodoService {
     @Transactional
     public ResponseEntity createTodo(TodoDto todoDto){
         String accountId = SecurityUtil.getCurrentUsername().get();
-        Account account = accountRepository.findByAccountId(accountId);
+        Account account = accountRepository.findByAccountId(accountId).get();
         Todo todo = new Todo(account,todoDto);
         Todo save = todoRepository.save(todo);
         return new ResponseEntity(save.getId(), HttpStatus.CREATED);
@@ -34,7 +34,7 @@ public class TodoService {
     @Transactional
     public ResponseEntity todoList(Long status, Pageable pageable) {
         String id = SecurityUtil.getCurrentUsername().get();
-        Account account = accountRepository.findByAccountId(id);
+        Account account = accountRepository.findByAccountId(id).get();
         for(Todo todo : account.getTodoList()){
             todo.refreshStatus();
             todoRepository.save(todo);

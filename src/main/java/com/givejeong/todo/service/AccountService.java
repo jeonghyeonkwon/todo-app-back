@@ -27,21 +27,18 @@ public class AccountService {
     private final AccountRepository accountRepository;
 
     private final PasswordEncoder passwordEncoder;
-    public Map validateId(String id) {
-        Map msg = new HashMap();
-        Account account = accountRepository.findByAccountId(id);
-        if(account==null){
-            msg.put("message","ID_OK");
-        }else{
-            msg.put("message","ID_NO");
+    public ResponseEntity validateId(String id) {
+        Optional<Account> byAccountId = accountRepository.findByAccountId(id);
+        if(byAccountId.isPresent()){
+            return new ResponseEntity<>(new ErrorDto("ID_NO"),HttpStatus.CONFLICT);
         }
-        return msg;
+        return new ResponseEntity<>("ID_OK",HttpStatus.OK);
     }
     @Transactional
     public ResponseEntity<Object> createUser(AccountDto dto) {
-        Account account = accountRepository.findByAccountId(dto.getAccountId());
+        Optional<Account> byAccountId = accountRepository.findByAccountId(dto.getAccountId());
 
-        if(account==null){
+        if(!byAccountId.isPresent()){
             Account newUser = new Account(dto);
             newUser.setPassword(passwordEncoder.encode(dto.getPassword()));
             Account save = accountRepository.save(newUser);
@@ -55,7 +52,7 @@ public class AccountService {
 
     public Account currentUser() {
         String accountId = SecurityUtil.getCurrentUsername().get();
-        return accountRepository.findByAccountId(accountId);
+        return accountRepository.findByAccountId(accountId).get();
     }
     @Transactional
     public ResponseEntity updateUser(Long id, String update, UpdateDto dto) {

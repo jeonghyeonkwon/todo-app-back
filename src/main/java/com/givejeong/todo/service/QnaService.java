@@ -41,7 +41,7 @@ public class QnaService {
     @Transactional
     public ResponseEntity<Long> createQna(String section, QnaDto dto) {
         String accountId = SecurityUtil.getCurrentUsername().get();
-        Account account = accountRepository.findByAccountId(accountId);
+        Account account = accountRepository.findByAccountId(accountId).get();
         Qna qna = new Qna(account,dto,section);
         dto.getProgrammingType().forEach(o->{
             ProgrammingRole role = new ProgrammingRole(qna,o.getKor());
@@ -52,15 +52,6 @@ public class QnaService {
     }
 
     public ResponseEntity findQna(String section, Pageable pageable) {
-//        FieldEnum fieldEnum = FieldEnum.find(section);
-//        Page<Qna> qna = qnaRepository.findSectionQna(pageable,fieldEnum);
-//
-//        List<QnaListDto> list = qna.stream().map(o-> new QnaListDto(o)).collect(Collectors.toList());
-//        ListFormDto dto = new ListFormDto(qna, list);
-//        Map map = new HashMap();
-//        map.put("list",dto);
-//        System.out.println(dto);
-//        return new ResponseEntity(map, HttpStatus.OK);
         Page<QnaListDto> qnaListDtos = qnaRepository.qnaListDtos(section, pageable);
         List<Long> qnaIdList = qnaListDtos.stream().map(o -> o.getId()).collect(Collectors.toList());
         List<RoleTypeDto> roleTypeDtoList = boardRepository.roleTypeDtoListInType("qna", qnaIdList);
@@ -87,7 +78,7 @@ public class QnaService {
     @Transactional
     public ResponseEntity createComment(Long id, CommentDto dto) {
         String accountId = SecurityUtil.getCurrentUsername().get();
-        Account account = accountRepository.findByAccountId(accountId);
+        Account account = accountRepository.findByAccountId(accountId).get();
         Qna qna = qnaRepository.findById(id).get();
         Comment comment = new Comment(account,qna,dto);
         Comment save = commentRepository.save(comment);

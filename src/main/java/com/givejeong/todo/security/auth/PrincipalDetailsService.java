@@ -15,7 +15,7 @@ public class PrincipalDetailsService implements UserDetailsService {
     private final AccountRepository accountRepository;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Account account = accountRepository.findByAccountId(username);
+        Account account = accountRepository.findByAccountId(username).get();
         System.out.println("service : " + account.getAccountId() + "pw : " + account.getAccountPw() +"account : "  +account.getLocalEnum().getKor());
         System.out.println("PrincipalDetailsService");
         return new PrincipalDetails(account);

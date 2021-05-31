@@ -15,13 +15,13 @@ public class TodoController {
 
     @GetMapping("/api/todo")
     public ResponseEntity todo_리스트(@RequestParam("status") Long status,Pageable pageable){
-        System.out.println("status : " + status);
+
 
         return todoService.todoList(status,pageable);
     }
     @PostMapping("/api/todo")
     public ResponseEntity 할일_추가(@RequestBody TodoDto todoDto){
-        System.out.println("todoLIst : " + todoDto.getGoal());
+
         return todoService.createTodo(todoDto);
     }
 

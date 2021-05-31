@@ -41,7 +41,7 @@ public class StudyService {
     @Transactional
     public ResponseEntity<Long> createStudy(String section, StudyDto dto){
         String accountId = SecurityUtil.getCurrentUsername().get();
-        Account user = accountRepository.findByAccountId(accountId);
+        Account user = accountRepository.findByAccountId(accountId).get();
         Study study = new Study(user,dto,section);
         dto.getProgrammingType().forEach(o->{
             ProgrammingRole role = new ProgrammingRole(study,o.getKor());
@@ -63,10 +63,6 @@ public class StudyService {
         List<RoleTypeDto> roleTypeDtoList = boardRepository.roleTypeDtoList("study", studyDto.getId());
         studyDto.setProgrammingType(roleTypeDtoList);
         return new ResponseEntity<>(studyDto,HttpStatus.OK);
-//        List<RoleTypeDto> collect = board.getProgrammingRoleList().stream().map(data -> new RoleTypeDto(data)).collect(Collectors.toList());
-//        Account account = board.getAccount();
-//        List<CommentDto> commentList = board.getCommentList().stream().map(d -> new CommentDto(d)).collect(Collectors.toList());
-//        return new ResponseEntity<>(new StudyDto(board,account,collect,commentList),HttpStatus.OK);
     }
 
 
@@ -80,25 +76,6 @@ public class StudyService {
 
     //게시판 리스트
     public ResponseEntity findStudy(String section,LocalEnum localEnum,Pageable pageable) {
-//        FieldEnum fieldEnum = FieldEnum.find(section);
-//        System.out.println("서비스 section: " + section);
-//        System.out.println(fieldEnum);
-//        Page<Study> study;
-//        if(localEnum.name().equals("ALL")){
-//            study = studyRepository.findSectionStudy(pageable,fieldEnum);
-//        }else{
-//             study = studyRepository.findSectionLocalStudy(pageable,fieldEnum,localEnum);
-//        }
-//
-//        List<StudyListDto> list = study.stream().map(o -> new StudyListDto(o)).collect(Collectors.toList());
-//
-//
-//        ListFormDto dto = new ListFormDto(study,list);
-//        Map map = new HashMap();
-//        map.put("list",dto);
-//
-//
-//        return new ResponseEntity(map,HttpStatus.OK);
         Page<StudyListDto> studyListDtos = studyRepository.studyListDtos(section, localEnum, pageable);
         List<Long> studyIdList = studyListDtos.stream().map(o -> o.getId()).collect(Collectors.toList());
         List<RoleTypeDto> roleTypeDtoList = boardRepository.roleTypeDtoListInType("study", studyIdList);
@@ -111,7 +88,7 @@ public class StudyService {
     public ResponseEntity createComment(Long id, CommentDto dto) {
 
         String userId = SecurityUtil.getCurrentUsername().get();
-        Account account = accountRepository.findByAccountId(userId);
+        Account account = accountRepository.findByAccountId(userId).get();
 
         Study study = studyRepository.findById(id).get();
         Comment comment = new Comment(account,study,dto);

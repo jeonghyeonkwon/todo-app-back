@@ -11,20 +11,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class QnaController {
     private final QnaService qnaService;
 
-    @GetMapping("/api/qna")
+    @GetMapping("/qna")
     public ResponseEntity QNA_게시판(@RequestParam("section") String section, Pageable pageable){
         return qnaService.findQna(section,pageable);
     }
-    @PostMapping("/api/qna")
+    @PostMapping("/qna")
     public ResponseEntity<Long> QNA_게시글_작성(@RequestParam("section") String section, @RequestBody QnaDto dto){
         return qnaService.createQna(section,dto);
     }
 
-    @GetMapping("/api/qna/{id}")
+    @GetMapping("/qna/{id}")
     public ResponseEntity QNA_게시글_자세히(@PathVariable("id") Long id){
         return qnaService.findQnaDetail(id);
     }
@@ -32,7 +33,7 @@ public class QnaController {
     public ResponseEntity QNA_댓글_페이징(@PathVariable("id") Long id,Pageable pageable){
         return qnaService.commentList(id,pageable);
     }
-    @PostMapping("/api/qna/{id}")
+    @PostMapping("/qna/{id}")
     public ResponseEntity 댓글_달기(@PathVariable("id") Long id, @RequestBody CommentDto dto){
         return qnaService.createComment(id,dto);
     }
