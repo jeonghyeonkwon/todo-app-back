@@ -1,4 +1,4 @@
-# 스터디 TODO Back-end[미완성] (21-05-09기준)
+# 스터디 TODO Back-end[미완성] (21-05-23기준)
 [프론트엔드 (React)](https://github.com/jeonghyeonkwon/todo-app-front)
 
 ## 주요 기술
@@ -13,7 +13,10 @@ POST|/authenticate|로그인|토큰 발행|
 GET|/register|회원가입 폼|X|회원 가입 폼에 지역리스트를 보내줌|
 GET|/validate|아이디 검증|X|회원 가입 중 중복된 이름이 있는지 검증|
 POST|/register|회원 가입 완료|X|회원 가입 데이터를 받아 db에 저장|
-GET|api/myinfo|회원 정보 수정 폼|O|로그인된 회원 정보(아이디,이름,지역)만 출력|
+GET|/api/myinfo|회원 정보 수정 폼|O|로그인된 회원 정보(아이디,이름,지역)만 출력|
+GET|/api/search-id|아이디 찾기|X|회원가입한 회원의 이름, 전화번호로 검색
+GET|/api/search-pw|비밀번호 찾기|X|회원가임한 아이디, 이름 전화번호로 검색해 있으면 pk 넘겨줌|
+PATCH|/api/search-pw/{id}|비밀번호 변경|X|새로운 비밀번호로 수정|
 PATCH|/api/myinfo/{id}|회원 정보 수정|O|회원 정보 수정|
 GET|/locallist|지역 리스트 반환|X|지역(서울,대구,대전,...등)|
 GET|ex) /api/study?section=web&page=24|게시물 리스트|X|모바일,웹,DB,프로그래밍 언어에 따라 페이징처리로 리스트 응답|
@@ -30,5 +33,6 @@ GET|/api/todo?status={No}&page={pageNo}&size=10|todo 리스트 출력|O|토큰�
 POST|/api/todo|TODO 추가|O|
 PATCH|api/todo/{id}|TODO 성공 처리|O|현재 진행중 또는 오늘 마감인 TODO 성공으로 변경
 
-
+### ERD
+![데이터 베이스](https://user-images.githubusercontent.com/38342219/119259867-35e82300-bc0b-11eb-954b-afd40755c425.PNG)
 
