@@ -20,21 +20,23 @@ public class QnaController {
     public ResponseEntity QNA_게시판(@RequestParam("section") String section, Pageable pageable){
         return qnaService.findQna(section,pageable);
     }
-    @PostMapping("/qna")
-    public ResponseEntity<Long> QNA_게시글_작성(@RequestParam("section") String section, @RequestBody QnaDto dto){
-        return qnaService.createQna(section,dto);
+    @PostMapping("/qna/{skill}/{userId}")
+    public ResponseEntity<Long> QNA_게시글_작성(@PathVariable String skill,@PathVariable Long userId, @RequestBody QnaDto dto){
+        return qnaService.createQna(skill,userId,dto);
     }
 
     @GetMapping("/qna/{id}")
     public ResponseEntity QNA_게시글_자세히(@PathVariable("id") Long id){
         return qnaService.findQnaDetail(id);
     }
-    @GetMapping("/api/qna/{id}/comment")
+
+
+    @GetMapping("/qna/{id}/comment")
     public ResponseEntity QNA_댓글_페이징(@PathVariable("id") Long id,Pageable pageable){
         return qnaService.commentList(id,pageable);
     }
-    @PostMapping("/qna/{id}")
-    public ResponseEntity 댓글_달기(@PathVariable("id") Long id, @RequestBody CommentDto dto){
-        return qnaService.createComment(id,dto);
+    @PostMapping("/{userId}/qna/{boardId}")
+    public ResponseEntity 댓글_달기(@PathVariable Long userId,@PathVariable Long boardId, @RequestBody CommentDto dto){
+        return qnaService.createComment(userId,boardId,dto);
     }
 }

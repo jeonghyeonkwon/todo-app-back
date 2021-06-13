@@ -15,6 +15,7 @@ import com.givejeong.todo.repository.QnaRepository;
 import com.givejeong.todo.repository.querydsl.BoardRepository;
 import com.givejeong.todo.security.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -31,6 +32,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+
 public class QnaService {
     private final AccountRepository accountRepository;
     private final QnaRepository qnaRepository;
@@ -39,9 +41,12 @@ public class QnaService {
     private final BoardRepository boardRepository;
 
     @Transactional
-    public ResponseEntity<Long> createQna(String section, QnaDto dto) {
+    public ResponseEntity<Long> createQna(String section, Long userId,QnaDto dto) {
         String accountId = SecurityUtil.getCurrentUsername().get();
         Account account = accountRepository.findByAccountId(accountId).get();
+        if(!account.getId().equals(userId)){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         Qna qna = new Qna(account,dto,section);
         dto.getProgrammingType().forEach(o->{
             ProgrammingRole role = new ProgrammingRole(qna,o.getKor());
@@ -76,9 +81,11 @@ public class QnaService {
     }
 
     @Transactional
-    public ResponseEntity createComment(Long id, CommentDto dto) {
+    public ResponseEntity createComment(Long userId,Long id, CommentDto dto) {
         String accountId = SecurityUtil.getCurrentUsername().get();
         Account account = accountRepository.findByAccountId(accountId).get();
+
+        if(!userId.equals(account.getId())) return new ResponseEntity(HttpStatus.BAD_REQUEST);
         Qna qna = qnaRepository.findById(id).get();
         Comment comment = new Comment(account,qna,dto);
         Comment save = commentRepository.save(comment);

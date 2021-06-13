@@ -7,6 +7,7 @@ import com.givejeong.todo.repository.AccountRepository;
 import com.givejeong.todo.repository.TodoRepository;
 import com.givejeong.todo.security.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -20,21 +21,24 @@ import java.util.stream.Collectors;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+
 public class TodoService {
     private final AccountRepository accountRepository;
     private final TodoRepository todoRepository;
     @Transactional
-    public ResponseEntity createTodo(TodoDto todoDto){
+    public ResponseEntity createTodo(Long userId,TodoDto todoDto){
         String accountId = SecurityUtil.getCurrentUsername().get();
         Account account = accountRepository.findByAccountId(accountId).get();
+        if(!account.getId().equals(userId)) return new ResponseEntity(HttpStatus.BAD_REQUEST);
         Todo todo = new Todo(account,todoDto);
         Todo save = todoRepository.save(todo);
         return new ResponseEntity(save.getId(), HttpStatus.CREATED);
     }
     @Transactional
-    public ResponseEntity todoList(Long status, Pageable pageable) {
-        String id = SecurityUtil.getCurrentUsername().get();
-        Account account = accountRepository.findByAccountId(id).get();
+    public ResponseEntity todoList(Long userId, Long status, Pageable pageable) {
+        String accountId = SecurityUtil.getCurrentUsername().get();
+        Account account = accountRepository.findByAccountId(accountId).get();
+        if(!userId.equals(account.getId())) return new ResponseEntity(HttpStatus.BAD_REQUEST);
         for(Todo todo : account.getTodoList()){
             todo.refreshStatus();
             todoRepository.save(todo);
@@ -44,8 +48,13 @@ public class TodoService {
         return new ResponseEntity(todoList,HttpStatus.OK);
     }
     @Transactional
-    public ResponseEntity success(Long id) {
-        Todo todo = todoRepository.findById(id).get();
+    public ResponseEntity success(Long userId,Long cardId) {
+        String accountId = SecurityUtil.getCurrentUsername().get();
+
+        Account account = accountRepository.findByAccountId(accountId).get();
+        if(!account.getId().equals(userId)) return new ResponseEntity(HttpStatus.BAD_REQUEST);
+
+        Todo todo = todoRepository.findById(cardId).get();
         todo.success();
         Todo save = todoRepository.save(todo);
         return new ResponseEntity(save,HttpStatus.OK);

@@ -36,7 +36,7 @@ public class TodoRepositoryImpl implements TodoRepositoryCustom{
                 .where(accountEq(id), todoEnumEq(status))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .orderBy(todo.goal.desc()).fetch();
+                .orderBy(todo.goal.asc()).fetch();
         JPAQuery<Todo> countQuery = jpaQueryFactory.selectFrom(todo).where(accountEq(id), todoEnumEq(status));
         return PageableExecutionUtils.getPage(content,pageable,countQuery::fetchCount);
     }

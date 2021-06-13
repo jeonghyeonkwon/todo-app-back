@@ -20,22 +20,17 @@ import java.util.Map;
 public class StudyController {
     private final StudyService studyService;
 
-    @GetMapping("/locallist")
-    public ResponseEntity 스터디_지역(){
-        Map data = new HashMap<>();
-        data.put("local", LocalEnum.localList());
-        return ResponseEntity.ok().body(data);
-    }
+
     @GetMapping("/study")
     public ResponseEntity 스터디_게시판(@RequestParam("section") String section,@RequestParam(value="local",defaultValue = "ALL") LocalEnum localEnum, Pageable pageable){
 
         return studyService.findStudy(section,localEnum,pageable);
     }
 
-    //이거 ?section으로 바꿔야함
-    @PostMapping("/study")
-    public ResponseEntity<Long> 게시글_작성(@RequestParam("section")String section, @RequestBody StudyDto dto){
-        return studyService.createStudy(section,dto);
+
+    @PostMapping("/study/{skill}/{userId}")
+    public ResponseEntity<Long> 게시글_작성(@PathVariable String skill, @PathVariable Long userId,@RequestBody StudyDto dto){
+        return studyService.createStudy(skill,userId,dto);
 
     }
 
@@ -48,14 +43,14 @@ public class StudyController {
     public ResponseEntity Study_댓글_페이징(@PathVariable("id") Long boardId ,Pageable pageable){
         return studyService.commentList(boardId,pageable);
     }
-    @PatchMapping("/study/{id}")
-    public ResponseEntity 마감_하기(@PathVariable("id") Long id){
+    @PatchMapping("{userId}/study/{boardId}/closing")
+    public ResponseEntity 마감_하기(@PathVariable Long userId,@PathVariable Long boardId){
 
-        return studyService.closing(id);
+        return studyService.closing(userId,boardId);
     }
-    @PostMapping("/study/{id}")
-    public ResponseEntity 댓글_달기(@PathVariable("id") Long id, @RequestBody CommentDto dto){
-        return studyService.createComment(id,dto);
+    @PostMapping("{userId}/study/{boardId}")
+    public ResponseEntity 댓글_달기(@PathVariable Long userId,@PathVariable Long boardId, @RequestBody CommentDto dto){
+        return studyService.createComment(userId,boardId,dto);
     }
 
 }

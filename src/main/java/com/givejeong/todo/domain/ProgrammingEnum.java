@@ -16,7 +16,7 @@ public enum ProgrammingEnum {
     OBJECTC("오브젝트-C"),
     SPRING("스프링"),
     NODEJS("node-js"),
-    DJANGO("node-js"),
+    DJANGO("장고"),
     PHP("php"),
     RUBYON("ruby on rails"),
     REACTN("리액트네이티브"),

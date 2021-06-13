@@ -16,13 +16,13 @@ public class QnaListDto {
     private String writer;
     private List<RoleTypeDto> roleTypeDtoList;
     private Long hit;
-    private String createStudy;
+    private String createQna;
 
-    public QnaListDto(Long id, String title, String writer, Long hit, LocalDateTime createStudy){
+    public QnaListDto(Long id, String title, String writer, Long hit, LocalDateTime createQna){
         this.id = id;
         this.title = title;
         this.writer = writer;
         this.hit = hit;
-        this.createStudy = createStudy.format(DateTimeFormatter.ofPattern("yy-MM-dd HH:mm"));
+        this.createQna = createQna.format(DateTimeFormatter.ofPattern("yy-MM-dd HH:mm"));
     }
 }

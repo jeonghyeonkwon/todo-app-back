@@ -45,19 +45,7 @@ public class RankService{
                 .name()
                 .toLowerCase(Locale.ROOT), (double) o.get(programmingRole.count()) / (double) totalCount * 100.0))
                 .collect(Collectors.toList());
-        System.out.println("QnaList");
-        qnaRankCollect.forEach(o->{
-            System.out.println(o);
-        });
-        System.out.println("StudyList");
-        studyRankCollect.forEach(o->{
-            System.out.println(o);
-        });
 
-        System.out.println("TotalList");
-        totalRankCollect.forEach(o->{
-            System.out.println(o);
-        });
 
         return new RankFormDto(qnaRankCollect,studyRankCollect,totalRankCollect);
 

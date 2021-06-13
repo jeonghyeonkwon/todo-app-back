@@ -1,6 +1,7 @@
 package com.givejeong.todo.controller;
 
 
+import com.givejeong.todo.domain.LocalEnum;
 import com.givejeong.todo.service.QnaService;
 import com.givejeong.todo.service.RankService;
 import com.givejeong.todo.service.StudyService;
@@ -28,5 +29,11 @@ public class HomeController {
         map.put("study",studyService.recentList());
         map.put("qna",qnaService.recentList());
         return new ResponseEntity(map, HttpStatus.OK);
+    }
+    @GetMapping("/api/locallist")
+    public ResponseEntity 스터디_지역(){
+        Map data = new HashMap<>();
+        data.put("local", LocalEnum.localList());
+        return ResponseEntity.ok().body(data);
     }
 }

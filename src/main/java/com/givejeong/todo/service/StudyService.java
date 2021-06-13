@@ -39,9 +39,12 @@ public class StudyService {
     private final BoardRepository boardRepository;
 
     @Transactional
-    public ResponseEntity<Long> createStudy(String section, StudyDto dto){
+    public ResponseEntity<Long> createStudy(String section, Long userId,StudyDto dto){
         String accountId = SecurityUtil.getCurrentUsername().get();
         Account user = accountRepository.findByAccountId(accountId).get();
+        if(!user.getId().equals(userId)){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         Study study = new Study(user,dto,section);
         dto.getProgrammingType().forEach(o->{
             ProgrammingRole role = new ProgrammingRole(study,o.getKor());
@@ -67,8 +70,11 @@ public class StudyService {
 
 
     @Transactional
-    public ResponseEntity closing(Long id) {
-        Study study = studyRepository.findById(id).get();
+    public ResponseEntity closing(Long userId,Long boardId) {
+        Study study = studyRepository.findById(boardId).get();
+        Account account = study.getAccount();
+        if(!account.getId().equals(userId)) return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        
         study.closingCompleted();
         studyRepository.save(study);
         return new ResponseEntity<>(study.getId(),HttpStatus.OK);
@@ -85,11 +91,11 @@ public class StudyService {
     }
 
     @Transactional
-    public ResponseEntity createComment(Long id, CommentDto dto) {
+    public ResponseEntity createComment(Long userId,Long id, CommentDto dto) {
 
-        String userId = SecurityUtil.getCurrentUsername().get();
-        Account account = accountRepository.findByAccountId(userId).get();
-
+        String accountId = SecurityUtil.getCurrentUsername().get();
+        Account account = accountRepository.findByAccountId(accountId).get();
+        if(!userId.equals(account.getId())) return new ResponseEntity(HttpStatus.BAD_REQUEST);
         Study study = studyRepository.findById(id).get();
         Comment comment = new Comment(account,study,dto);
 

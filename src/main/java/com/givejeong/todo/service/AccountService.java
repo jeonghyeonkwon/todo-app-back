@@ -8,6 +8,7 @@ import com.givejeong.todo.dto.auth.UpdateDto;
 import com.givejeong.todo.repository.AccountRepository;
 import com.givejeong.todo.security.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Slf4j
 public class AccountService {
     private final AccountRepository accountRepository;
 
@@ -75,7 +77,8 @@ public class AccountService {
                 break;
         }
         Account updateUser = accountRepository.save(account);
-        return new ResponseEntity(updateUser.getId(),HttpStatus.NO_CONTENT);
+
+        return new ResponseEntity(updateUser.getId(),HttpStatus.OK);
     }
     @Transactional
     public ResponseEntity deleteUser(Long id, UpdateDto dto) {
@@ -118,6 +121,6 @@ public class AccountService {
         }
         Account account = byId.get();
         account.updatePassword(passwordEncoder.encode(searchDto.getNewPw()));
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity(account.getId(),HttpStatus.OK);
     }
 }

@@ -32,14 +32,6 @@ public class AccountController {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
 
-    @GetMapping("/register")
-    public ResponseEntity 회원가입_폼(){
-
-        //지역 리스트 반환
-        Map data = new HashMap<>();
-        data.put("local",LocalEnum.createAccountLocalList());
-        return ResponseEntity.ok().body(data);
-    }
 
     @GetMapping("/validate")
     public ResponseEntity 아이디_중복_체크(@RequestParam("accountId") String accountId){
@@ -56,6 +48,7 @@ public class AccountController {
     }
     @PostMapping("/authenticate")
     public ResponseEntity<TokenDto> 로그인(@RequestBody LoginDto loginDto){
+        log.info("username"+loginDto.getUsername()+"password"+loginDto.getPassword());
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(loginDto.getUsername(),loginDto.getPassword());
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(token);
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -94,7 +87,6 @@ public class AccountController {
 
     @GetMapping("/search-id")
     public ResponseEntity 아이디_찾기(@RequestParam String accountName, @RequestParam String tel){
-
         return accountService.searchId(accountName,tel);
 
     }
@@ -108,7 +100,6 @@ public class AccountController {
 
         if(id == searchDto.getId()) return accountService.updatePw(searchDto);
         else return new ResponseEntity(HttpStatus.BAD_REQUEST);
-
     }
 
 }
