@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
@@ -17,6 +18,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api")
 public class HomeController {
     private final StudyService studyService;
     private final QnaService qnaService;
@@ -30,7 +32,7 @@ public class HomeController {
         map.put("qna",qnaService.recentList());
         return new ResponseEntity(map, HttpStatus.OK);
     }
-    @GetMapping("/api/locallist")
+    @GetMapping("/locallist")
     public ResponseEntity 스터디_지역(){
         Map data = new HashMap<>();
         data.put("local", LocalEnum.localList());
