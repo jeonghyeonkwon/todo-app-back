@@ -1,4 +1,4 @@
-# 스터디 TODO Back-end[진행중] (21-06-14기준)
+# 스터디 TODO Back-end[공부한 내용 테스트를 위해 제작 - 중지] (22-06-09기준)
 [프론트엔드 (React)](https://github.com/jeonghyeonkwon/todo-app-front)
 
 ## 주요 기술
